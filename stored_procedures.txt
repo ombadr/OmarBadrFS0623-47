@@ -1,0 +1,51 @@
+-- 1. Una SP parametrica che, ricevendo in input un anno, visualizzi l’elenco delle contravvenzioni effettuate in un quel determinato anno
+
+
+CREATE PROCEDURE dbo.ElencoContravvenzioniAnno
+   @Anno INTEGER
+AS
+BEGIN
+    SELECT V.idverbale, A.Cognome, A.Nome, V.DataViolazione, V.Importo, V.DecurtamentoPunti
+    FROM VERBALE V
+    JOIN ANAGRAFICA A ON V.idanagrafica = A.idanagrafica
+    WHERE YEAR (V.DataViolazione) = @Anno
+END
+
+-- Esecuzione SP
+GO
+    EXEC ElencoContravvenzioniAnno @Anno = 2024
+GO
+
+
+
+-- 2. Una SP parametrica che, ricevendo in input una data, visualizzi il totale dei punti decurtati in quella determinata data
+
+CREATE PROCEDURE dbo.TotalePuntiDecurtatiData
+    @Data DATE
+AS
+BEGIN
+    SELECT SUM(DecurtamentoPunti) as TotalePuntiDecurtati
+    FROM VERBALE
+    WHERE DataViolazione = @Data
+END
+
+-- Esecuzione SP
+GO 
+    EXEC TotalePuntiDecurtatiData @Data = '2024-05-30'
+GO
+
+
+-- 3. Una SP che consenta di eliminare un determinato verbale identificandolo con il proprio identificativo.
+
+CREATE PROCEDURE dbo.EliminaVerbale
+    @idverbale INT
+AS
+BEGIN
+    DELETE FROM VERBALE
+    WHERE idverbale = @idverbale
+END
+
+-- Esecuzione SP
+GO
+    EXEC EliminaVerbale @idverbale = 10
+GO
